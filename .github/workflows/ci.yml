@@ -1,0 +1,61 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  typecheck-and-build:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      # 主进程依赖（electron 等 devDeps）；跳过二进制下载脚本，CI 只做类型检查与构建
+      - name: Install root deps
+        run: npm install --ignore-scripts
+        env:
+          ELECTRON_SKIP_BINARY_DOWNLOAD: '1'
+
+      - name: Install renderer deps
+        run: npm install
+        working-directory: renderer
+
+      - name: Typecheck main
+        run: npm run typecheck:main
+
+      - name: Build main
+        run: npm run build:main
+
+      - name: Typecheck renderer
+        run: npm run typecheck
+        working-directory: renderer
+
+      - name: Build renderer (static export)
+        run: npm run build
+        working-directory: renderer
+
+      # Windows 便携产物冒烟（dir target 不走 NSIS，跨平台可构建）
+      - name: Package smoke (win-unpacked dir)
+        if: matrix.os == 'windows-latest'
+        run: npx electron-builder --win dir
+        env:
+          ELECTRON_SKIP_BINARY_DOWNLOAD: '0'
+
+      - name: Upload portable artifact
+        if: matrix.os == 'windows-latest'
+        uses: actions/upload-artifact@v4
+        with:
+          name: maskdesk-win-portable
+          path: |
+            win-unpacked/**/*
+          retention-days: 14

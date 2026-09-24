@@ -1,0 +1,12 @@
+appId: com.hhx465453939.maskdesk
+productName: maskdesk
+directories:
+  output: dist
+files:
+  - main/dist/**/*
+  - renderer/out/**/*
+  - package.json
+win:
+  target:
+    - dir
+  # 便携版 = dir 产物（win-unpacked）打 zip，规避 NSIS/wine（SPEC ADR + PRD G3 决议）

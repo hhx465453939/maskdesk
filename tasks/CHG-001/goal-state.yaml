@@ -1,0 +1,32 @@
+change_id: CHG-001
+spec_version: 1
+state: GOAL_ACTIVE
+objective: "maskdesk 本地文档脱敏客户端：Electron(nextron 等效) + Next.js 纯前端，M1-M6 六里程碑交付 Windows 便携版"
+milestones:
+  - id: M1
+    name: 骨架与设计系统
+    state: COMPLETE
+    evidence:
+      - "typecheck:main=0 / build:main=0（main/dist 产出 index.js+preload）"
+      - "renderer tsc --noEmit 干净 / next build=0 静态导出 out/index.html"
+      - "会话 IPC 闭环代码就绪（原子写+路径注入防护）；窗口级冒烟因无 xvfb 移交 Windows 机 A1 验收"
+    findings:
+      - "修复：CSP connect-src 'none' 挡 HMR → 条件注入（dev 豁免）"
+      - "修复：file:// 下 webRequest 不可靠 → _document meta CSP（仅生产）"
+      - "修复：session.ts 漏 import fs"
+      - "环境：宿主 ~/.npmrc omit=dev → 项目级 .npmrc omit= 空覆盖（坑已记录）"
+      - "debt(PASS_WITH_DEBT)：窗口冒烟证据待 Windows 机 A1 补齐"
+  - { id: M2, name: 导入与格式归一化, state: PENDING }
+  - { id: M3, name: 选中即脱敏核心, state: PENDING }
+  - { id: M4, name: 规则库与快速模式, state: PENDING }
+  - { id: M5, name: 导出打包与 PII 门禁, state: PENDING }
+  - { id: M6, name: Windows 便携交付, state: PENDING }
+current_milestone: M2
+evidence:
+  - /tmp/m1-tc-main.log
+  - /tmp/m1-bd-main.log
+  - /tmp/bd-r2.log
+blockers: []
+authorization:
+  commit: true   # 主人 2026-09-24 明示"commitpush 上去"
+  push: true

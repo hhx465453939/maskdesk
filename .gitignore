@@ -1,0 +1,21 @@
+# dependencies
+node_modules/
+renderer/node_modules/
+
+# build outputs
+main/dist/
+renderer/.next/
+renderer/out/
+dist/
+win-unpacked/
+
+# electron / runtime
+*.log
+.electron/
+
+# os
+.DS_Store
+Thumbs.db
+
+# local env
+.env*.local
