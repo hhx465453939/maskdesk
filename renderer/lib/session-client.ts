@@ -10,6 +10,8 @@ export interface MaskdeskBridge {
   pickFiles(sessionId: string): Promise<ImportedFileMeta[]>;
   stashFile(sessionId: string, name: string, bytes: Uint8Array): Promise<ImportedFileMeta>;
   readRaw(rawPath: string): Promise<Uint8Array>;
+  exportRules(json: string): Promise<{ ok: boolean; path?: string }>;
+  importRules(): Promise<{ ok: boolean; json?: string }>;
 }
 
 declare global {

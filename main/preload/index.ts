@@ -26,6 +26,12 @@ const api = {
     ipcRenderer.invoke('import:stash', sessionId, name, bytes),
   /** 读取副本字节（转换用） */
   readRaw: (rawPath: string): Promise<Uint8Array> => ipcRenderer.invoke('import:read', rawPath),
+  /** 规则库导出（用户选路径写 JSON） */
+  exportRules: (json: string): Promise<{ ok: boolean; path?: string }> =>
+    ipcRenderer.invoke('rules:export', json),
+  /** 规则库导入（用户选文件读 JSON） */
+  importRules: (): Promise<{ ok: boolean; json?: string }> =>
+    ipcRenderer.invoke('rules:import'),
 };
 
 export type MaskdeskApi = typeof api;

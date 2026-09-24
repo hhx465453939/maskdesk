@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { QueuePane } from '../components/QueuePane';
 import { ReaderPane } from '../components/ReaderPane';
 import { RulesPane } from '../components/RulesPane';
+import { QuickPane } from '../components/QuickPane';
 import { bridge, newSession } from '../lib/session-client';
 import { importViaDrop, importViaPicker } from '../lib/import-client';
 import { nextToken } from '../lib/rules-engine';
@@ -9,12 +10,15 @@ import type { DocItem, Rule, RuleTag, Session } from '../lib/types';
 
 const DEFAULT_SESSION_ID = 'default';
 
+type Tab = 'workbench' | 'quick';
+
 export default function Home() {
   const [session, setSession] = useState<Session | null>(null);
   const [selectedDocId, setSelectedDocId] = useState<string | null>(null);
   const [savedAt, setSavedAt] = useState<string | null>(null);
   const [appVersion, setAppVersion] = useState('');
   const [importing, setImporting] = useState(false);
+  const [tab, setTab] = useState<Tab>('workbench');
 
   const persist = useCallback(async (s: Session) => {
     const r = await bridge().saveSession(s);
@@ -56,25 +60,22 @@ export default function Home() {
   );
 
   // ---- 规则操作（ADR-5：视图纯函数，规则变更即视图变更） ----
-  const addRule = useCallback(
-    (pattern: string, tag: RuleTag) => {
-      setSession((prev) => {
-        if (!prev) return prev;
-        if (prev.rules.some((r) => r.pattern === pattern && r.enabled)) return prev; // 去重
-        const rule: Rule = {
-          id: `r-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 6)}`,
-          tag,
-          ruleType: 'literal',
-          pattern,
-          replacementToken: nextToken(prev.rules, tag),
-          enabled: true,
-          createdAt: new Date().toISOString(),
-        };
-        return { ...prev, rules: [...prev.rules, rule] };
-      });
-    },
-    [],
-  );
+  const addRule = useCallback((pattern: string, tag: RuleTag) => {
+    setSession((prev) => {
+      if (!prev) return prev;
+      if (prev.rules.some((r) => r.pattern === pattern && r.enabled)) return prev;
+      const rule: Rule = {
+        id: `r-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 6)}`,
+        tag,
+        ruleType: 'literal',
+        pattern,
+        replacementToken: nextToken(prev.rules, tag),
+        enabled: true,
+        createdAt: new Date().toISOString(),
+      };
+      return { ...prev, rules: [...prev.rules, rule] };
+    });
+  }, []);
 
   const toggleRule = useCallback((id: string) => {
     setSession((prev) =>
@@ -88,6 +89,42 @@ export default function Home() {
     setSession((prev) => (prev ? { ...prev, rules: prev.rules.filter((r) => r.id !== id) } : prev));
   }, []);
 
+  const exportRules = useCallback(async () => {
+    if (!session) return;
+    const json = JSON.stringify(
+      { version: 1, exportedAt: new Date().toISOString(), rules: session.rules },
+      null,
+      2,
+    );
+    await bridge().exportRules(json);
+  }, [session]);
+
+  const importRules = useCallback(async () => {
+    const r = await bridge().importRules();
+    if (!r.ok || !r.json) return;
+    try {
+      const parsed = JSON.parse(r.json) as { rules?: Rule[] };
+      const incoming = Array.isArray(parsed.rules) ? parsed.rules : [];
+      setSession((prev) => {
+        if (!prev) return prev;
+        const seen = new Set(prev.rules.map((x) => `${x.pattern}|${x.replacementToken}`));
+        const merged = [...prev.rules];
+        for (const rule of incoming) {
+          const key = `${rule.pattern}|${rule.replacementToken}`;
+          if (!rule.pattern || seen.has(key)) continue;
+          seen.add(key);
+          merged.push({
+            ...rule,
+            id: `r-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 6)}`,
+          });
+        }
+        return { ...prev, rules: merged };
+      });
+    } catch {
+      // 非法 JSON 静默忽略（main 侧已校验可读）
+    }
+  }, []);
+
   useEffect(() => {
     load();
     bridge()
@@ -95,7 +132,6 @@ export default function Home() {
       .then((info) => setAppVersion(info.version));
   }, [load]);
 
-  // 文档/规则变更后自动持久化
   useEffect(() => {
     if (session && (session.docs.length > 0 || session.rules.length > 0)) void persist(session);
   }, [session, persist]);
@@ -109,7 +145,20 @@ export default function Home() {
           <span className="brand-mark" />
           maskdesk
         </div>
-        <span className="session-name">{session ? session.name : '加载中…'}</span>
+        <nav className="tab-nav">
+          <button
+            className={`tab-nav__item${tab === 'workbench' ? ' tab-nav__item--on' : ''}`}
+            onClick={() => setTab('workbench')}
+          >
+            文档工作台
+          </button>
+          <button
+            className={`tab-nav__item${tab === 'quick' ? ' tab-nav__item--on' : ''}`}
+            onClick={() => setTab('quick')}
+          >
+            快速脱敏
+          </button>
+        </nav>
         <div className="topbar-meta">
           {importing ? <span className="importing-flag">导入中…</span> : null}
           {savedAt ? <span>已保存 {savedAt}</span> : <span>未保存</span>}
@@ -123,17 +172,29 @@ export default function Home() {
           <span>v{appVersion || '—'}</span>
         </div>
       </header>
-      <main className="workbench">
-        <QueuePane
-          session={session}
-          selectedId={selectedDocId}
-          onSelect={setSelectedDocId}
-          onDrop={(files) => void runImport('drop', files)}
-          onPick={() => void runImport('pick')}
-        />
-        <ReaderPane doc={selectedDoc} rules={session?.rules ?? []} onCreateRule={addRule} />
-        <RulesPane session={session} onToggle={toggleRule} onDelete={deleteRule} />
-      </main>
+      {tab === 'workbench' ? (
+        <main className="workbench">
+          <QueuePane
+            session={session}
+            selectedId={selectedDocId}
+            onSelect={setSelectedDocId}
+            onDrop={(files) => void runImport('drop', files)}
+            onPick={() => void runImport('pick')}
+          />
+          <ReaderPane doc={selectedDoc} rules={session?.rules ?? []} onCreateRule={addRule} />
+          <RulesPane
+            session={session}
+            onToggle={toggleRule}
+            onDelete={deleteRule}
+            onExport={() => void exportRules()}
+            onImport={() => void importRules()}
+          />
+        </main>
+      ) : (
+        <main className="quick-host">
+          <QuickPane />
+        </main>
+      )}
     </div>
   );
 }

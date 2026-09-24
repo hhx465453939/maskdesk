@@ -485,3 +485,139 @@ body {
 .rule-item__delete:hover {
   color: var(--text-1);
 }
+
+/* ---------- 页签导航 ---------- */
+
+.tab-nav {
+  display: inline-flex;
+  gap: 2px;
+  margin-left: 8px;
+}
+
+.tab-nav__item {
+  appearance: none;
+  border: none;
+  background: none;
+  font-family: var(--font);
+  font-size: var(--fs-caption);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--text-3);
+  padding: 6px 14px;
+  cursor: pointer;
+  border-radius: var(--radius);
+}
+
+.tab-nav__item--on {
+  background: var(--text-1);
+  color: var(--surface);
+}
+
+/* ---------- 规则导入导出 ---------- */
+
+.rule-io {
+  display: flex;
+  gap: 8px;
+  padding: 0 20px 12px;
+}
+
+/* ---------- 快速脱敏 ---------- */
+
+.quick-host {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 24px 32px;
+  overflow: hidden;
+  background: var(--bg);
+}
+
+.quick {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  flex: 1;
+  min-height: 0;
+  background: var(--surface);
+  border: var(--line-w) solid var(--line);
+  border-radius: var(--radius);
+  padding: 24px;
+}
+
+.quick__detectors {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.detector-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: var(--fs-caption);
+  color: var(--text-2);
+  border: var(--line-w) solid var(--line-strong);
+  border-radius: var(--radius);
+  padding: 4px 10px;
+  cursor: pointer;
+}
+
+.detector-chip input {
+  accent-color: var(--accent);
+}
+
+.quick__io {
+  display: flex;
+  gap: 24px;
+  flex: 1;
+  min-height: 0;
+}
+
+.quick__col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.quick__col-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: var(--fs-caption);
+  font-weight: 600;
+  color: var(--text-2);
+  padding-bottom: 8px;
+}
+
+.quick__hits {
+  color: var(--accent);
+  font-family: var(--font-mono);
+}
+
+.quick__textarea,
+.quick__out {
+  flex: 1;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  line-height: 1.8;
+  border: var(--line-w) solid var(--line);
+  border-radius: var(--radius);
+  background: var(--bg);
+  padding: 16px;
+  resize: none;
+  outline: none;
+}
+
+.quick__textarea:focus {
+  border-color: var(--accent);
+}
+
+.quick__out {
+  white-space: pre-wrap;
+  word-break: break-all;
+  overflow-y: auto;
+  user-select: text;
+  background: var(--surface);
+}
