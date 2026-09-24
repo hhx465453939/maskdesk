@@ -57,5 +57,5 @@ jobs:
         with:
           name: maskdesk-win-portable
           path: |
-            win-unpacked/**/*
+            dist/win-unpacked/**/*
           retention-days: 14
