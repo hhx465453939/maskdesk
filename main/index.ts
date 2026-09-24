@@ -3,6 +3,7 @@ import * as path from 'path';
 import { registerSessionIpc } from './ipc/session';
 import { registerAppIpc } from './ipc/app';
 import { registerImportIpc } from './ipc/import';
+import { registerRulesIpc } from './ipc/rules';
 
 const isDev = process.env.NODE_ENV === 'development';
 
@@ -49,6 +50,7 @@ app.whenReady().then(() => {
   registerSessionIpc(ipcMain);
   registerAppIpc(ipcMain);
   registerImportIpc(ipcMain);
+  registerRulesIpc(ipcMain);
   createMainWindow();
 
   app.on('activate', () => {

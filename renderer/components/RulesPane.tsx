@@ -4,10 +4,12 @@ interface Props {
   session: Session | null;
   onToggle: (id: string) => void;
   onDelete: (id: string) => void;
+  onExport: () => void;
+  onImport: () => void;
 }
 
-/** 第 3 栏 · 规则库（M3 最小版：列表/启停/删除；M4 补导入导出与快速模式） */
-export function RulesPane({ session, onToggle, onDelete }: Props) {
+/** 第 3 栏 · 规则库：列表/启停/删除 + JSON 导入导出（跨项目复用） */
+export function RulesPane({ session, onToggle, onDelete, onExport, onImport }: Props) {
   const rules = session?.rules ?? [];
   return (
     <section className="pane pane--rules">
@@ -16,6 +18,14 @@ export function RulesPane({ session, onToggle, onDelete }: Props) {
         <span className="pane-head__title">脱敏规则库</span>
         <span className="pane-head__count">{rules.length}</span>
       </header>
+      <div className="rule-io">
+        <button className="btn" onClick={onExport} disabled={rules.length === 0}>
+          导出 JSON
+        </button>
+        <button className="btn" onClick={onImport}>
+          导入 JSON
+        </button>
+      </div>
       <div className="pane-body">
         {rules.length === 0 ? (
           <div className="empty">
