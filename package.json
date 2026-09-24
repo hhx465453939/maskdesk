@@ -17,13 +17,12 @@
     "typecheck:renderer": "npm --prefix renderer exec tsc -- --noEmit",
     "dist:win-portable": "npm run build && electron-builder --win dir"
   },
-  "dependencies": {
+  "devDependencies": {
     "@types/node": "^22.10.0",
     "concurrently": "^9.1.0",
     "cross-env": "^7.0.3",
     "electron": "^33.2.0",
     "electron-builder": "^25.1.8",
-    "pdfjs-dist": "^4.10.38",
     "typescript": "^5.6.3"
   }
 }
