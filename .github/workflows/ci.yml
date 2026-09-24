@@ -44,18 +44,23 @@ jobs:
         run: npm run build
         working-directory: renderer
 
-      # Windows 便携产物冒烟（dir target 不走 NSIS，跨平台可构建）
-      - name: Package smoke (win-unpacked dir)
+      # Windows 便携产物（dir target 不走 NSIS，跨平台可构建）
+      - name: Package portable (win-unpacked dir)
         if: matrix.os == 'windows-latest'
         run: npx electron-builder --win dir
         env:
           ELECTRON_SKIP_BINARY_DOWNLOAD: '0'
+
+      # 打成单文件 zip：下载解压双击 maskdesk.exe 即用
+      - name: Zip portable
+        if: matrix.os == 'windows-latest'
+        shell: pwsh
+        run: Compress-Archive -Path "dist/win-unpacked/*" -DestinationPath "maskdesk-win-portable.zip" -Force
 
       - name: Upload portable artifact
         if: matrix.os == 'windows-latest'
         uses: actions/upload-artifact@v4
         with:
           name: maskdesk-win-portable
-          path: |
-            dist/win-unpacked/**/*
+          path: maskdesk-win-portable.zip
           retention-days: 14

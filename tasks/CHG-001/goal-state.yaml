@@ -1,6 +1,6 @@
 change_id: CHG-001
 spec_version: 1
-state: GOAL_ACTIVE
+state: PENDING_FINAL_ACCEPTANCE
 objective: "maskdesk 本地文档脱敏客户端：Electron(nextron 等效) + Next.js 纯前端，M1-M6 六里程碑交付 Windows 便携版"
 milestones:
   - id: M1
@@ -24,8 +24,9 @@ milestones:
     evidence: [识别器注册表 8 类 + QuickPane 即时脱敏, 规则 JSON 导入导出 (dialog IO + 去重合并), 双端 typecheck+build 0 错] }
   - { id: M5, name: 导出打包与 PII 门禁, state: COMPLETE,
     evidence: [导出冒烟 5/5 (五件套/无残留/可追溯/门禁命中), 全量回归 19/19, 双端 typecheck+build 0 错] }
-  - { id: M6, name: Windows 便携交付, state: PENDING }
-current_milestone: M6
+  - { id: M6, name: Windows 便携交付, state: COMPLETE,
+    evidence: [CI 产 maskdesk-win-portable 单文件 zip, RELEASE-CHECKLIST A1-A7 移交真机, debt: 应用图标用默认] }
+current_milestone: null（六里程碑完成，待 Windows 真机冒烟 A1-A7 后闭环）
 evidence:
   - /tmp/m1-tc-main.log
   - /tmp/m1-bd-main.log

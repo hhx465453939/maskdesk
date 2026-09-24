@@ -27,9 +27,17 @@ Next.js · Electron（nextron）· mammoth · pdfjs · Turndown · JSZip —— 
 
 ## 📌 项目状态
 
-- **CHG-001 开发中**（2026-09-24 立项）：独立轻量 Windows 桌面客户端，双击即用、离线可用
-- 立项与工程契约见 [`tasks/CHG-001/`](tasks/CHG-001/)（CHANGE / PRD / SPEC）
-- 功能行为参考 family_health 平台已验证的脱敏链路（规则模型 / 线性脱敏 / 映射记录 / ZIP 结构）
+**CHG-001 六里程碑全部完成**（M1 骨架 → M2 导入转换 → M3 选中即脱敏 → M4 规则库+快速模式 → M5 导出门禁 → M6 Windows 交付），CI 每次推送自动构建并产出 Windows 便携包。
+
+### 📦 下载使用（Windows 10/11）
+
+1. 打开 [Actions 页面](https://github.com/hhx465453939/maskdesk/actions) → 选最新成功 run → 下载 artifact **maskdesk-win-portable**
+2. 解压 zip → 双击 **maskdesk.exe**（免安装，离线可用，文档不出机）
+3. 最终验收步骤见 [`docs/RELEASE-CHECKLIST.md`](docs/RELEASE-CHECKLIST.md)
+
+### 🗂 立项与工程契约
+
+见 [`tasks/CHG-001/`](tasks/CHG-001/)（CHANGE / PRD / SPEC / TRACEABILITY / goal-state）；功能行为参考 family_health 平台已验证的脱敏链路（规则模型 / 线性脱敏 / 映射记录 / ZIP 结构）。
 
 ## ⚠️ 免责声明
 
