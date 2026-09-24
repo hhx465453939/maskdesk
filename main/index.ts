@@ -2,6 +2,7 @@ import { app, BrowserWindow, ipcMain } from 'electron';
 import * as path from 'path';
 import { registerSessionIpc } from './ipc/session';
 import { registerAppIpc } from './ipc/app';
+import { registerImportIpc } from './ipc/import';
 
 const isDev = process.env.NODE_ENV === 'development';
 
@@ -47,6 +48,7 @@ function createMainWindow(): BrowserWindow {
 app.whenReady().then(() => {
   registerSessionIpc(ipcMain);
   registerAppIpc(ipcMain);
+  registerImportIpc(ipcMain);
   createMainWindow();
 
   app.on('activate', () => {

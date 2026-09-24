@@ -16,12 +16,13 @@ milestones:
       - "修复：session.ts 漏 import fs"
       - "环境：宿主 ~/.npmrc omit=dev → 项目级 .npmrc omit= 空覆盖（坑已记录）"
       - "debt(PASS_WITH_DEBT)：窗口冒烟证据待 Windows 机 A1 补齐"
-  - { id: M2, name: 导入与格式归一化, state: PENDING }
+  - { id: M2, name: 导入与格式归一化, state: COMPLETE,
+    evidence: [冒烟 6/6 (DOCX/PDF/MD/扫描件E1002), typecheck 双端 0 错, next build 含 worker] }
   - { id: M3, name: 选中即脱敏核心, state: PENDING }
   - { id: M4, name: 规则库与快速模式, state: PENDING }
   - { id: M5, name: 导出打包与 PII 门禁, state: PENDING }
   - { id: M6, name: Windows 便携交付, state: PENDING }
-current_milestone: M2
+current_milestone: M3
 evidence:
   - /tmp/m1-tc-main.log
   - /tmp/m1-bd-main.log

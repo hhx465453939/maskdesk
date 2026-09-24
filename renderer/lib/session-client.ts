@@ -1,4 +1,5 @@
 import type { AppInfo, Session, SessionIndexItem } from './types';
+import type { ImportedFileMeta } from '../../main/preload/index';
 
 /** preload 白名单 API 的类型化封装（renderer 唯一的主进程入口） */
 export interface MaskdeskBridge {
@@ -6,6 +7,9 @@ export interface MaskdeskBridge {
   listSessions(): Promise<SessionIndexItem[]>;
   loadSession(id: string): Promise<Session | null>;
   appInfo(): Promise<AppInfo>;
+  pickFiles(sessionId: string): Promise<ImportedFileMeta[]>;
+  stashFile(sessionId: string, name: string, bytes: Uint8Array): Promise<ImportedFileMeta>;
+  readRaw(rawPath: string): Promise<Uint8Array>;
 }
 
 declare global {
