@@ -330,3 +330,158 @@ body {
   color: var(--accent);
   font-weight: 600;
 }
+
+/* ---------- 规则条（M3 建规则） ---------- */
+
+.rule-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 32px;
+  background: var(--surface);
+  border-bottom: var(--line-w) solid var(--line);
+  flex-shrink: 0;
+}
+
+.rule-bar__sel {
+  font-weight: 600;
+  color: var(--accent);
+  max-width: 280px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.rule-bar__label {
+  font-size: var(--fs-caption);
+  color: var(--text-3);
+}
+
+.rule-bar__tag {
+  border-color: var(--line-strong);
+}
+
+.rule-bar__tag:hover {
+  border-color: var(--accent);
+  background: var(--accent-weak);
+  color: var(--accent);
+}
+
+/* ---------- 遮挡条（脱敏的物理视觉语言，唯一装饰动效） ---------- */
+
+.mask-bar {
+  background: var(--text-1);
+  color: transparent;
+  border-radius: var(--radius);
+  padding: 0 2px;
+  user-select: none;
+  animation: mask-in 0.25s ease-out;
+}
+
+@keyframes mask-in {
+  from {
+    clip-path: inset(0 100% 0 0);
+  }
+  to {
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+/* ---------- 视图切换 ---------- */
+
+.view-toggle {
+  margin-left: 16px;
+  display: inline-flex;
+  border: var(--line-w) solid var(--line-strong);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.toggle-btn {
+  appearance: none;
+  border: none;
+  background: var(--surface);
+  color: var(--text-2);
+  font-family: var(--font);
+  font-size: var(--fs-caption);
+  padding: 4px 12px;
+  cursor: pointer;
+}
+
+.toggle-btn--on {
+  background: var(--text-1);
+  color: var(--surface);
+}
+
+/* ---------- 规则列表 ---------- */
+
+.pane-head__count {
+  margin-left: auto;
+  font-family: var(--font-mono);
+  font-size: var(--fs-body);
+  color: var(--text-3);
+}
+
+.rule-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+}
+
+.rule-item {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  padding: 12px 10px;
+  border-bottom: var(--line-w) solid var(--line);
+}
+
+.rule-item--off .rule-item__body {
+  opacity: 0.45;
+}
+
+.rule-item__enable input {
+  accent-color: var(--accent);
+  margin-top: 3px;
+}
+
+.rule-item__head {
+  display: flex;
+  gap: 8px;
+  align-items: baseline;
+}
+
+.rule-item__tag {
+  font-size: var(--fs-caption);
+  font-weight: 700;
+  color: var(--accent);
+  letter-spacing: 0.04em;
+}
+
+.rule-item__token {
+  font-family: var(--font-mono);
+  font-size: var(--fs-caption);
+  color: var(--text-1);
+}
+
+.rule-item__pattern {
+  font-size: var(--fs-caption);
+  color: var(--text-3);
+  word-break: break-all;
+  line-height: 1.5;
+}
+
+.rule-item__delete {
+  appearance: none;
+  border: none;
+  background: none;
+  color: var(--text-3);
+  font-size: 16px;
+  cursor: pointer;
+  padding: 0 4px;
+  line-height: 1;
+}
+
+.rule-item__delete:hover {
+  color: var(--text-1);
+}
