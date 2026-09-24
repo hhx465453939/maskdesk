@@ -32,6 +32,9 @@ const api = {
   /** 规则库导入（用户选文件读 JSON） */
   importRules: (): Promise<{ ok: boolean; json?: string }> =>
     ipcRenderer.invoke('rules:import'),
+  /** 导出 ZIP 落盘（用户选路径，原子写） */
+  saveExport: (defaultName: string, bytes: Uint8Array): Promise<{ ok: boolean; path?: string }> =>
+    ipcRenderer.invoke('export:save', defaultName, bytes),
 };
 
 export type MaskdeskApi = typeof api;

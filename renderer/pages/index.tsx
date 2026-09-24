@@ -5,7 +5,8 @@ import { RulesPane } from '../components/RulesPane';
 import { QuickPane } from '../components/QuickPane';
 import { bridge, newSession } from '../lib/session-client';
 import { importViaDrop, importViaPicker } from '../lib/import-client';
-import { nextToken } from '../lib/rules-engine';
+import { nextToken, applyRules } from '../lib/rules-engine';
+import { buildZip, scanPii } from '../lib/export-builder';
 import type { DocItem, Rule, RuleTag, Session } from '../lib/types';
 
 const DEFAULT_SESSION_ID = 'default';
@@ -136,6 +137,52 @@ export default function Home() {
     if (session && (session.docs.length > 0 || session.rules.length > 0)) void persist(session);
   }, [session, persist]);
 
+  // ---- 导出（FR-5 + PII 门禁） ----
+  const [exporting, setExporting] = useState(false);
+  const [exportNote, setExportNote] = useState<string | null>(null);
+
+  const exportZip = useCallback(async () => {
+    if (!session || exporting) return;
+    const readyDocs = session.docs.filter((d) => d.status === 'ready' && d.originalMarkdown);
+    if (readyDocs.length === 0) {
+      setExportNote('没有可导出的就绪文档');
+      return;
+    }
+    setExporting(true);
+    setExportNote(null);
+    try {
+      const rawBytes = new Map<string, Uint8Array>();
+      for (const d of readyDocs) {
+        if (d.rawPath) rawBytes.set(d.id, await bridge().readRaw(d.rawPath));
+      }
+      // PII 门禁：扫描脱敏视图，命中须用户确认（决定权还用户）
+      const hits = scanPii(
+        readyDocs.map((d) => {
+          const applied = applyRules(d.originalMarkdown!, session.rules);
+          return applied.segments.map((s) => s.text).join('');
+        }),
+      );
+      if (hits.length > 0) {
+        const detail = hits.slice(0, 5).map((h) => `${h.label} ${h.sample}`).join('、');
+        const ok = window.confirm(
+          `脱敏后文档中仍检测到 ${hits.length} 处疑似敏感信息：\n${detail}\n\n确认仍要导出吗？`,
+        );
+        if (!ok) {
+          setExportNote('已取消导出（请补充脱敏规则）');
+          return;
+        }
+      }
+      const bytes = await buildZip({ session, appVersion: appVersion || '0.1.0', rawBytes });
+      const stamp = new Date().toISOString().slice(0, 10);
+      const r = await bridge().saveExport(`maskdesk-export-${session.name}-${stamp}.zip`, bytes);
+      setExportNote(r.ok ? `已导出 ${r.path}` : '导出已取消');
+    } catch (err) {
+      setExportNote(`导出失败：${(err as Error).message}`);
+    } finally {
+      setExporting(false);
+    }
+  }, [session, exporting, appVersion]);
+
   const selectedDoc = session?.docs.find((d) => d.id === selectedDocId) ?? null;
 
   return (
@@ -161,7 +208,13 @@ export default function Home() {
         </nav>
         <div className="topbar-meta">
           {importing ? <span className="importing-flag">导入中…</span> : null}
-          {savedAt ? <span>已保存 {savedAt}</span> : <span>未保存</span>}
+          {exporting ? <span className="importing-flag">打包中…</span> : null}
+          {exportNote ? <span>{exportNote}</span> : savedAt ? <span>已保存 {savedAt}</span> : null}
+          {tab === 'workbench' ? (
+            <button className="btn btn--accent" onClick={() => void exportZip()} disabled={!session || exporting}>
+              导出 ZIP
+            </button>
+          ) : null}
           <button
             className="btn btn--accent"
             onClick={() => session && persist(session)}
