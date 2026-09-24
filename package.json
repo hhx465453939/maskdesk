@@ -1,0 +1,28 @@
+{
+  "name": "maskdesk",
+  "productName": "maskdesk",
+  "version": "0.1.0",
+  "description": "本地文档脱敏工作台 — 选中即脱敏，一键打包导出",
+  "private": true,
+  "main": "main/dist/main/index.js",
+  "scripts": {
+    "dev": "concurrently -k \"npm:dev:renderer\" \"npm:dev:main\"",
+    "dev:renderer": "npm --prefix renderer run dev",
+    "dev:main": "npm run build:main && cross-env NODE_ENV=development electron main/dist/main/index.js",
+    "build": "npm run build:renderer && npm run build:main",
+    "build:renderer": "npm --prefix renderer run build",
+    "build:main": "tsc -p tsconfig.main.json",
+    "typecheck": "npm run typecheck:main && npm run typecheck:renderer",
+    "typecheck:main": "tsc -p tsconfig.main.json --noEmit",
+    "typecheck:renderer": "npm --prefix renderer exec tsc -- --noEmit",
+    "dist:win-portable": "npm run build && electron-builder --win dir"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "concurrently": "^9.1.0",
+    "cross-env": "^7.0.3",
+    "electron": "^33.2.0",
+    "electron-builder": "^25.1.8",
+    "typescript": "^5.6.3"
+  }
+}
