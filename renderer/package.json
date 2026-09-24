@@ -3,19 +3,22 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "prebuild": "node scripts/copy-worker.js",
     "dev": "next dev -p 3000",
     "build": "next build",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "next": "^14.2.18",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1"
-  },
-  "devDependencies": {
     "@types/node": "^22.10.0",
     "@types/react": "18.3.31",
     "@types/react-dom": "^18.3.1",
+    "@types/turndown": "^5.0.6",
+    "mammoth": "^1.12.3",
+    "next": "^14.2.18",
+    "pdfjs-dist": "^6.3.289",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "turndown": "^7.2.4",
     "typescript": "^5.6.3"
   }
 }

@@ -19,3 +19,5 @@ Thumbs.db
 
 # local env
 .env*.local
+renderer/public/
+*.tsbuildinfo
