@@ -5,8 +5,10 @@
 
 ## 准备
 
-1. 打开 GitHub 仓库 → Actions → 最新成功 run → 下载 artifact **maskdesk-win-portable**
-2. 解压得到文件夹，双击 **maskdesk.exe**
+1. 打开 GitHub 仓库 → [Releases](https://github.com/hhx465453939/maskdesk/releases) → 下载最新版
+2. 二选一：
+   - **便携包** `maskdesk-win-portable.zip` → 解压 → 双击 `maskdesk.exe`
+   - **安装包** `maskdesk-setup-*.exe` → 安装 → 从开始菜单/桌面启动
 
 ## 步骤
 

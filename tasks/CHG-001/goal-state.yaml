@@ -26,7 +26,9 @@ milestones:
     evidence: [导出冒烟 5/5 (五件套/无残留/可追溯/门禁命中), 全量回归 19/19, 双端 typecheck+build 0 错] }
   - { id: M6, name: Windows 便携交付, state: COMPLETE,
     evidence: [CI 产 maskdesk-win-portable 单文件 zip, RELEASE-CHECKLIST A1-A7 移交真机, debt: 应用图标用默认] }
-current_milestone: null（六里程碑完成，待 Windows 真机冒烟 A1-A7 后闭环）
+  - { id: M7, name: Windows 双形态交付 + Release 发布, state: COMPLETE,
+    evidence: [NSIS 安装包 + 便携 zip 双产物, 推 v* tag 自动发布 GitHub Release (SPEC-amendment-1-release), typecheck:renderer 修复 + author 元数据, debt: 应用图标用默认] }
+current_milestone: null（七里程碑完成，待 Windows 真机冒烟 A1-A7 后闭环）
 evidence:
   - /tmp/m1-tc-main.log
   - /tmp/m1-bd-main.log

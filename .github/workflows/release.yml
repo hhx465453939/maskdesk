@@ -1,0 +1,63 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      # 主进程依赖（electron 等 devDeps）；跳过二进制下载脚本，打包步骤再按需下载
+      - name: Install root deps
+        run: npm install --ignore-scripts
+        env:
+          ELECTRON_SKIP_BINARY_DOWNLOAD: '1'
+
+      - name: Install renderer deps
+        run: npm install
+        working-directory: renderer
+
+      - name: Typecheck main
+        run: npm run typecheck:main
+
+      - name: Build main
+        run: npm run build:main
+
+      - name: Typecheck renderer
+        run: npm run typecheck
+        working-directory: renderer
+
+      - name: Build renderer (static export)
+        run: npm run build
+        working-directory: renderer
+
+      # 双形态：NSIS 安装包（dist/*.exe）+ 便携目录（win-unpacked），走 electron-builder.yml 的 win.target
+      - name: Package (NSIS installer + portable dir)
+        run: npx electron-builder --win
+        env:
+          ELECTRON_SKIP_BINARY_DOWNLOAD: '0'
+
+      # 便携目录打成单文件 zip：下载解压双击 maskdesk.exe 即用
+      - name: Zip portable
+        shell: pwsh
+        run: Compress-Archive -Path "dist/win-unpacked/*" -DestinationPath "maskdesk-win-portable.zip" -Force
+
+      - name: Publish GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            dist/*.exe
+            maskdesk-win-portable.zip
+          generate_release_notes: true

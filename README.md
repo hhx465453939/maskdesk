@@ -27,13 +27,16 @@ Next.js · Electron（nextron）· mammoth · pdfjs · Turndown · JSZip —— 
 
 ## 📌 项目状态
 
-**CHG-001 六里程碑全部完成**（M1 骨架 → M2 导入转换 → M3 选中即脱敏 → M4 规则库+快速模式 → M5 导出门禁 → M6 Windows 交付），CI 每次推送自动构建并产出 Windows 便携包。
+**CHG-001 六里程碑全部完成**（M1 骨架 → M2 导入转换 → M3 选中即脱敏 → M4 规则库+快速模式 → M5 导出门禁 → M6 Windows 交付）。推 `v*` 版本 tag 时 CI 自动构建并发布 Windows 安装包 + 便携包到 GitHub Release。
 
 ### 📦 下载使用（Windows 10/11）
 
-1. 打开 [Actions 页面](https://github.com/hhx465453939/maskdesk/actions) → 选最新成功 run → 下载 artifact **maskdesk-win-portable**
-2. 解压 zip → 双击 **maskdesk.exe**（免安装，离线可用，文档不出机）
-3. 最终验收步骤见 [`docs/RELEASE-CHECKLIST.md`](docs/RELEASE-CHECKLIST.md)
+在 [Releases 页面](https://github.com/hhx465453939/maskdesk/releases) 下载最新版本，二选一：
+
+- **安装包**：`maskdesk-setup-*.exe` —— 标准安装器，安装到程序目录 + 开始菜单/桌面快捷方式 + 卸载项
+- **便携包**：`maskdesk-win-portable.zip` —— 解压后双击 `maskdesk.exe` 免安装即用（离线可用，文档不出机）
+
+最终验收步骤见 [`docs/RELEASE-CHECKLIST.md`](docs/RELEASE-CHECKLIST.md)。
 
 ### 🗂 立项与工程契约
 

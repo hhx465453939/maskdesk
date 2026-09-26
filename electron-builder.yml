@@ -8,5 +8,14 @@ files:
   - package.json
 win:
   target:
+    - nsis
     - dir
   # 便携版 = dir 产物（win-unpacked）打 zip，规避 NSIS/wine（SPEC ADR + PRD G3 决议）
+  # 双形态：nsis 安装包（标准 .exe 安装器）+ dir 便携目录（CI 打 zip 一键运行）
+nsis:
+  oneClick: false
+  perMachine: false
+  allowToChangeInstallationDirectory: true
+  createDesktopShortcut: true
+  createStartMenuShortcut: true
+  artifactName: ${productName}-setup-${version}.${ext}
