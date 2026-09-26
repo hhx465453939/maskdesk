@@ -43,21 +43,29 @@ jobs:
         run: npm run build
         working-directory: renderer
 
-      # 双形态：NSIS 安装包（dist/*.exe）+ 便携目录（win-unpacked），走 electron-builder.yml 的 win.target
-      - name: Package (NSIS installer + portable dir)
-        run: npx electron-builder --win
+      # 便携目录（dir target）是 CI 已验证的稳妥路径，先产出保底
+      - name: Package portable (dir)
+        run: npx electron-builder --win dir
         env:
           ELECTRON_SKIP_BINARY_DOWNLOAD: '0'
 
-      # 便携目录打成单文件 zip：下载解压双击 maskdesk.exe 即用
+      # 打成单文件 zip：下载解压双击 maskdesk.exe 即用
       - name: Zip portable
         shell: pwsh
         run: Compress-Archive -Path "dist/win-unpacked/*" -DestinationPath "maskdesk-win-portable.zip" -Force
+
+      # NSIS 安装包：electron-builder 25.x 在 windows CI 偶发 makensis.exe ENOENT（#8613），
+      # 标记 best-effort，失败不阻塞便携包发布
+      - name: Package NSIS installer (best-effort)
+        run: npx electron-builder --win nsis
+        env:
+          ELECTRON_SKIP_BINARY_DOWNLOAD: '0'
+        continue-on-error: true
 
       - name: Publish GitHub Release
         uses: softprops/action-gh-release@v2
         with:
           files: |
-            dist/*.exe
             maskdesk-win-portable.zip
+            dist/*.exe
           generate_release_notes: true
