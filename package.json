@@ -4,7 +4,7 @@
   "version": "0.1.1",
   "description": "本地文档脱敏工作台 — 选中即脱敏，一键打包导出",
   "author": "Alex Huang",
-  "license": "MIT",
+  "license": "Apache-2.0",
   "private": true,
   "main": "main/dist/main/index.js",
   "scripts": {
