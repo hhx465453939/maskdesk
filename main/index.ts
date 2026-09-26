@@ -17,7 +17,8 @@ function createMainWindow(): BrowserWindow {
     title: 'maskdesk',
     backgroundColor: '#f7f8fa',
     webPreferences: {
-      preload: path.join(__dirname, '../preload/index.js'),
+      // tsc rootDir="." 输出保留源码层级：preload 编译产物在 <outDir>/main/preload/（与本文件同层），非 <outDir>/preload/
+      preload: path.join(__dirname, 'preload/index.js'),
       contextIsolation: true,
       nodeIntegration: false,
       sandbox: false,
@@ -42,7 +43,7 @@ function createMainWindow(): BrowserWindow {
     win.loadURL(process.env.RENDERER_URL);
     win.webContents.openDevTools({ mode: 'detach' });
   } else {
-    win.loadFile(path.join(__dirname, '../../renderer/out/index.html'));
+    win.loadFile(path.join(__dirname, '../../../renderer/out/index.html'));
   }
   return win;
 }
